@@ -80,6 +80,9 @@ def verbs(app, route, **kwargs):
                 "Verbs decorator: passed HTTP methods do not match HTTP methods of the class."
         else:
             kwargs['methods'] = found_methods
+        # reconcile endpoint name (esp. so we can use `url_for`)
+        if 'endpoint' not in kwargs:
+            kwargs['endpoint'] = cls.__name__
 
         from flask import request
         # add the appropriate route to the app
