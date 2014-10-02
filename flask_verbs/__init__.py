@@ -50,6 +50,9 @@ class Verbs:
         * Decorators can be added to the methods of a verbs-decorated class to affect
           just that route+method combination.
 
+        If you're writing a blueprint, you can still use Flask-Verbs by installing
+        directly to you're blueprint: `my_blueprint = Verbs(Blueprint(...))`.
+
         If another flask extension isn't working with this one, submit a bug report at
         https://github.com/Zankoku-Okuno/flask-verbs/issues
 
