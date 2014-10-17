@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='Flask-Verbs',
-    version='0.1.0',
+    version='0.1.1',
     author='Zankoku Okuno',
     author_email='zankoku.okuno@gmail.com',
     packages=['flask_verbs'],

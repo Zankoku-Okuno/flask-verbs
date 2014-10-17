@@ -88,14 +88,17 @@ def verbs(app, route, **kwargs):
             kwargs['endpoint'] = cls.__name__
 
         from flask import request
-        # add the appropriate route to the app
-        @app.route(route, **kwargs)
+        # create the dispatch function
         def verb_dispatch(**route_kwargs):
             x = cls(**route_kwargs)
             for k, v in kwargs.items():
                 if not hasattr(x, k):
                     setattr(x, k, v)
             return getattr(x, request.method)()
+        #attach documentation
+        verb_dispatch.__doc__ = cls.__doc__
+        #add the route to the application
+        app.route(route, **kwargs)(verb_dispatch)
 
         # no need to return anything other than the original class
         # the point was to update the state of the app's routing tables
