@@ -27,6 +27,9 @@ class Login:
             return self.GET()
 ```
 
+If the class has a `.pre` method, it will be called before dealing with the HTTP method.
+If `pre` returns anything other than `None`, then that value will be used as the return value from the view, and the HTTP method will be skipped.
+
 This extension should play nice with others. In particular, you should be able to
 use decorators on `.verbs`-enabled classes and on their methods. If you experience
 problems or have questions, [submit a bug report](https://github.com/Zankoku-Okuno/flask-verbs/issues).

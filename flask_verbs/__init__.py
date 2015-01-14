@@ -13,18 +13,25 @@ class Verbs:
 
         @app.verbs('/accounts/<int:user_id>')
         class Accounts:
-            def __init__(self, user_id):
-                self.user = User.query.get(user_id) or abort(404)
+            def __init__(self, **_):
+                pass # the user_id attr will automatically be set if it's not set here
+
+            def pre(self):
+                user = User.query.get(user_id)
+                if user:
+                    self.user = user
+                else:
+                    return redirect(url_for('index'))
 
             def GET(self):
-                render_template('user_profile.html', user=self.user)
+                return render_template('user_profile.html', user=self.user)
 
             @login_required
             def PUT(self):
                 # update database
                 ...
 
-       Note that while the classes verb-y methods must be all-uppercase, we do not
+       Note that while the class' verb-y methods must be all-uppercase, we do not
        artificially limit the verbs available to you: you can even make up custom
        verbs. Conversely, any callable, all-uppercase attribute of the class is
        treated as a valid verb for the resource.
@@ -56,7 +63,7 @@ class Verbs:
         If another flask extension isn't working with this one, submit a bug report at
         https://github.com/Zankoku-Okuno/flask-verbs/issues
 
-        And, when in doubt, the source code is <40 lines, so take a peek.
+        And, when in doubt, the source code is ~40 lines, so take a peek.
     """
 
     def __init__(self, app=None):
@@ -91,9 +98,13 @@ def verbs(app, route, **kwargs):
         # create the dispatch function
         def verb_dispatch(**route_kwargs):
             x = cls(**route_kwargs)
-            for k, v in kwargs.items():
+            for k, v in route_kwargs.items():
                 if not hasattr(x, k):
                     setattr(x, k, v)
+            if hasattr(x, 'pre'):
+                short_circuit = x.pre()
+                if short_circuit is not None:
+                    return short_circuit
             return getattr(x, request.method)()
         #attach documentation
         verb_dispatch.__doc__ = cls.__doc__
